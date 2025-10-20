@@ -8,17 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Nothing yet
 
 ### Changed
+
 - Nothing yet
 
 ### Fixed
+
 - Nothing yet
 
 ## [1.0.0] - 2025-10-20
 
 ### Added
+
 - **Initial Release** 🎉
 - Scalable Flutter application architecture with Riverpod and GoRouter
 - Professional authentication system with login screen
@@ -38,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation
 
 ### Technical Features
+
 - **State Management**: Riverpod with Notifier pattern
 - **Navigation**: GoRouter with authentication guards
 - **Architecture**: Clean architecture with feature organization
@@ -48,12 +53,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**: Comprehensive guides and API docs
 
 ### Design System
+
 - **Colors**: Royal Blue (#4169E1) primary theme
 - **Typography**: Material 3 design system
 - **Components**: Consistent spacing and styling
 - **Responsive**: Works on mobile, tablet, and desktop
 
 ### Developer Experience
+
 - **Type Safety**: Full type safety with Dart
 - **Hot Reload**: Fast development cycles
 - **Code Quality**: Linting and formatting rules
@@ -61,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**: Clear guides and examples
 
 ### Supported Platforms
+
 - ✅ Android
 - ✅ iOS
 - ✅ Web
@@ -69,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ macOS
 
 ### Test Credentials
+
 - Email: `test@example.com`, Password: `password`
 - Or any valid email with 6+ character password
 
@@ -84,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Migration Guides
 
 ### From 0.x to 1.0.0
+
 This is the initial stable release. No migration needed.
 
 ---
@@ -97,6 +107,7 @@ This is the initial stable release. No migration needed.
 ## Support
 
 If you encounter any issues or have questions:
+
 1. Check the [GitHub Issues](https://github.com/kongvannak-jpg/tick_tick/issues)
 2. Read the [Contributing Guide](CONTRIBUTING.md)
 3. Review the [Architecture Documentation](ARCHITECTURE.md)
