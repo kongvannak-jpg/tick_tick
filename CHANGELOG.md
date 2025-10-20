@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Test Coverage**: Replaced old counter app tests with login screen tests
 - **Flutter Version**: Fixed to stable version (3.24.0) for consistency
 - **Build Process**: Simplified CI workflow for better reliability
+- **Security Scanning**: Fixed CodeQL action deprecation warnings (v2 → v3)
+- **GitHub Permissions**: Added proper permissions for security-events and pages
+- **Integration Errors**: Resolved "Resource not accessible by integration" issues
 
 ### Technical Improvements
 
@@ -35,7 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Proper ProviderScope setup in tests
 - ✅ Comprehensive widget testing for login flow
 - ✅ Stable CI/CD pipeline with Android and Web builds
-- ✅ Security scanning integration
+- ✅ Security scanning with artifact upload approach
+- ✅ Updated GitHub Actions to latest standards
+- ✅ Proper workflow permissions configuration
 
 ## [1.0.0] - 2025-10-20
 
