@@ -19,6 +19,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing yet
 
+## [1.0.1] - 2025-10-20
+
+### Fixed
+
+- **CI/CD Pipeline Issues**: Resolved failing GitHub Actions checks
+- **Widget Tests**: Updated tests to work with new Riverpod architecture
+- **Test Coverage**: Replaced old counter app tests with login screen tests
+- **Flutter Version**: Fixed to stable version (3.24.0) for consistency
+- **Build Process**: Simplified CI workflow for better reliability
+
+### Technical Improvements
+
+- ✅ All tests now pass locally and in CI
+- ✅ Proper ProviderScope setup in tests
+- ✅ Comprehensive widget testing for login flow
+- ✅ Stable CI/CD pipeline with Android and Web builds
+- ✅ Security scanning integration
+
 ## [1.0.0] - 2025-10-20
 
 ### Added
