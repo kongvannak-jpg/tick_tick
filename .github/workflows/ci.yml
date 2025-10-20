@@ -1,0 +1,211 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # Code Quality and Testing
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    name: Analyze & Test
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+        channel: 'stable'
+        cache: true
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Verify formatting
+      run: dart format --output=none --set-exit-if-changed .
+
+    - name: Analyze project source
+      run: flutter analyze --fatal-infos
+
+    - name: Run tests
+      run: flutter test --coverage
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage/lcov.info
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  # Build for multiple platforms
+  build:
+    needs: analyze-and-test
+    strategy:
+      matrix:
+        target: [apk, web, windows, linux]
+        include:
+          - target: apk
+            os: ubuntu-latest
+            build_args: "apk --release"
+            artifact_name: "app-release.apk"
+            artifact_path: "build/app/outputs/flutter-apk/app-release.apk"
+          - target: web
+            os: ubuntu-latest
+            build_args: "web --release"
+            artifact_name: "web-build"
+            artifact_path: "build/web/"
+          - target: windows
+            os: windows-latest
+            build_args: "windows --release"
+            artifact_name: "windows-build"
+            artifact_path: "build/windows/x64/runner/Release/"
+          - target: linux
+            os: ubuntu-latest
+            build_args: "linux --release"
+            artifact_name: "linux-build"
+            artifact_path: "build/linux/x64/release/bundle/"
+
+    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.target }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+        channel: 'stable'
+        cache: true
+
+    # Linux specific setup
+    - name: Install Linux dependencies
+      if: matrix.target == 'linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
+    # Windows specific setup
+    - name: Setup Windows build environment
+      if: matrix.target == 'windows'
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Enable platform
+      if: matrix.target != 'apk'
+      run: flutter config --enable-${{ matrix.target }}-desktop
+
+    - name: Build ${{ matrix.target }}
+      run: flutter build ${{ matrix.build_args }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ${{ matrix.artifact_path }}
+
+  # Security scanning
+  security:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # Performance testing
+  performance:
+    runs-on: ubuntu-latest
+    name: Performance Test
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+        channel: 'stable'
+        cache: true
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Run performance tests
+      run: |
+        # Add performance test commands here
+        echo "Performance tests would run here"
+        # flutter drive --target=test_driver/performance_test.dart
+
+  # Deployment (only on main branch)
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [analyze-and-test, build, security]
+    runs-on: ubuntu-latest
+    name: Deploy
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download web build
+      uses: actions/download-artifact@v3
+      with:
+        name: web-build
+        path: build/web
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: build/web
+        cname: tick-tick.your-domain.com  # Optional: replace with your domain
+
+    # Add more deployment targets as needed
+    # - Firebase Hosting
+    # - AWS S3
+    # - Play Store (for APK)
+    # - Microsoft Store (for Windows)
+
+  # Notification
+  notify:
+    if: always()
+    needs: [analyze-and-test, build, security, deploy]
+    runs-on: ubuntu-latest
+    name: Notify
+
+    steps:
+    - name: Notify on success
+      if: ${{ needs.analyze-and-test.result == 'success' && needs.build.result == 'success' }}
+      run: |
+        echo "✅ Build successful! All checks passed."
+        # Add notification logic here (Slack, Discord, Email, etc.)
+
+    - name: Notify on failure
+      if: ${{ needs.analyze-and-test.result == 'failure' || needs.build.result == 'failure' }}
+      run: |
+        echo "❌ Build failed! Please check the logs."
+        # Add notification logic here
