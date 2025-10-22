@@ -38,6 +38,15 @@ dependencies:
   go_router: ^16.2.5
   riverpod_annotation: ^3.0.3
 
+  # Google Drive for data storage
+  google_sign_in: ^6.2.1
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+  url_launcher: ^6.3.2
+  crypto: ^3.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

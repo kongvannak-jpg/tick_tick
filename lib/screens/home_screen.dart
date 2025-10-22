@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tick_tick/constants/app_routes.dart';
 import 'package:tick_tick/providers/auth_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -17,10 +19,16 @@ class HomeScreen extends ConsumerWidget {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () => context.go(AppRoutes.profile),
+            tooltip: 'Profile',
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               ref.read(authStateProvider.notifier).logout();
             },
+            tooltip: 'Logout',
           ),
         ],
       ),
@@ -60,10 +68,57 @@ class HomeScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.blue[200]!),
               ),
-              child: const Text(
-                'You have successfully logged in! This is your home screen.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.black87),
+              child: Column(
+                children: [
+                  const Text(
+                    'Registration Complete!',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Your account has been automatically saved to Google Sheets.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // In a real app, you'd use url_launcher package to open:
+                      // https://docs.google.com/spreadsheets/d/1byf8ziMm5HGV5QyJ0m8FABbmqafC6QGjb5YMUb1DAEs/edit
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Check your Google Sheet to see your registration!',
+                          ),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.table_chart, color: Colors.white),
+                    label: const Text(
+                      'View Google Sheet',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4CAF50),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 24,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

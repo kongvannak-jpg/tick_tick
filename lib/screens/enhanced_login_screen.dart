@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tick_tick/constants/app_constants.dart';
+import 'package:tick_tick/constants/app_routes.dart';
 import 'package:tick_tick/providers/auth_provider.dart';
 import 'package:tick_tick/widgets/login_form.dart';
 
@@ -197,23 +199,6 @@ class EnhancedLoginScreen extends ConsumerWidget {
 
   void _handleRegister(BuildContext context) {
     // Navigate to register screen
-    // context.push(AppRoutes.register);
-
-    // For now, show a dialog
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Register'),
-        content: const Text(
-          'Registration functionality will be implemented soon.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+    context.go(AppRoutes.register);
   }
 }

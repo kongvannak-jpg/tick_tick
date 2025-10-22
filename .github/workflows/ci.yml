@@ -18,29 +18,29 @@ jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
     name: Analyze & Test
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.0'
-        channel: 'stable'
-        cache: true
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.0"
+          channel: "stable"
+          cache: true
 
-    - name: Get dependencies
-      run: flutter pub get
+      - name: Get dependencies
+        run: flutter pub get
 
-    - name: Verify formatting
-      run: dart format --output=none --set-exit-if-changed .
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
 
-    - name: Analyze project source
-      run: flutter analyze --fatal-infos
+      - name: Analyze project source
+        run: flutter analyze --fatal-infos
 
-    - name: Run tests
-      run: flutter test
+      - name: Run tests
+        run: flutter test
 
   # Build for multiple platforms
   build-android:
@@ -49,27 +49,27 @@ jobs:
     name: Build Android
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.0'
-        channel: 'stable'
-        cache: true
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.0"
+          channel: "stable"
+          cache: true
 
-    - name: Get dependencies
-      run: flutter pub get
+      - name: Get dependencies
+        run: flutter pub get
 
-    - name: Build APK
-      run: flutter build apk --release
+      - name: Build APK
+        run: flutter build apk --release
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-release.apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
   build-web:
     needs: analyze-and-test
@@ -77,58 +77,58 @@ jobs:
     name: Build Web
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.0'
-        channel: 'stable'
-        cache: true
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.0"
+          channel: "stable"
+          cache: true
 
-    - name: Get dependencies
-      run: flutter pub get
+      - name: Get dependencies
+        run: flutter pub get
 
-    - name: Build Web
-      run: flutter build web --release
+      - name: Build Web
+        run: flutter build web --release
 
-    - name: Upload web build
-      uses: actions/upload-artifact@v3
-      with:
-        name: web-build
-        path: build/web/
+      - name: Upload web build
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-build
+          path: build/web/
 
   # Security scanning
   security:
     runs-on: ubuntu-latest
     name: Security Scan
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'table'
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "table"
 
-    - name: Run Trivy for SARIF report
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+      - name: Run Trivy for SARIF report
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
 
-    - name: Upload scan results
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: security-scan-results
-        path: trivy-results.sarif
+      - name: Upload scan results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: security-scan-results
+          path: trivy-results.sarif
 
   # Deployment (only on main branch)
   deploy:
@@ -142,20 +142,20 @@ jobs:
       id-token: write
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Download web build
-      uses: actions/download-artifact@v3
-      with:
-        name: web-build
-        path: build/web
+      - name: Download web build
+        uses: actions/download-artifact@v3
+        with:
+          name: web-build
+          path: build/web
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: build/web
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
 
   # Notification
   notify:
@@ -165,12 +165,12 @@ jobs:
     name: Notify
 
     steps:
-    - name: Notify on success
-      if: ${{ needs.analyze-and-test.result == 'success' && needs.build-android.result == 'success' && needs.build-web.result == 'success' }}
-      run: |
-        echo "✅ Build successful! All checks passed."
+      - name: Notify on success
+        if: ${{ needs.analyze-and-test.result == 'success' && needs.build-android.result == 'success' && needs.build-web.result == 'success' }}
+        run: |
+          echo "✅ Build successful! All checks passed."
 
-    - name: Notify on failure
-      if: ${{ needs.analyze-and-test.result == 'failure' || needs.build-android.result == 'failure' || needs.build-web.result == 'failure' }}
-      run: |
-        echo "❌ Build failed! Please check the logs."
+      - name: Notify on failure
+        if: ${{ needs.analyze-and-test.result == 'failure' || needs.build-android.result == 'failure' || needs.build-web.result == 'failure' }}
+        run: |
+          echo "❌ Build failed! Please check the logs."
